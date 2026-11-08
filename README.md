@@ -1,6 +1,6 @@
 # CS340: AddressSanitizer Replication
 
-Week 1 prepares a reproducible AddressSanitizer (ASan) smoke test for **AddressSanitizer: A Fast Address Sanity Checker**, Konstantin Serebryany, Derek Bruening, Alexander Potapenko, and Dmitry Vyukov, USENIX ATC 2012 (paper 8 in the course list).
+This repository prepares a reproducible AddressSanitizer (ASan) smoke test and a focused heap-redzone experiment for **AddressSanitizer: A Fast Address Sanity Checker**, Konstantin Serebryany, Derek Bruening, Alexander Potapenko, and Dmitry Vyukov, USENIX ATC 2012 (paper 8 in the course list).
 
 - [Original paper](https://www.usenix.org/system/files/conference/atc12/atc12-final39.pdf)
 - [Official Clang AddressSanitizer documentation](https://clang.llvm.org/docs/AddressSanitizer.html)
@@ -10,7 +10,7 @@ Week 1 prepares a reproducible AddressSanitizer (ASan) smoke test for **AddressS
 
 The first milestone checks that we can build an instrumented C program, execute an in-bounds control, and obtain a symbolized ASan report for a one-byte heap-buffer overflow. This is an installation and instrumentation check, **not a reproduction of the paper's performance results or detection coverage**.
 
-The scripts and CI workflow are prepared. Treat a run as verified only after the workflow is green and its raw logs have been inspected. See [environment notes](docs/environment.md) and [evidence instructions](evidence/README.md). No sample output in this README is represented as a measured result.
+The smoke test passed in GitHub Actions for source commit `2c6e30f` (the run's raw logs still need to be preserved in this repository). A separate experiment now targets the paper's Section 3.5 claim about accesses within heap redzones, using the shadow-memory layout in Figure 1. Its protocol, result fields, and limitations are in [Claim 1](docs/claim1.md). Treat its results as verified only after the new CI job passes and its raw logs have been inspected. See [environment notes](docs/environment.md) and [evidence instructions](evidence/README.md). No uninspected output in this README is represented as a measured result.
 
 ## Setup: Ubuntu 24.04 x86-64
 
@@ -74,20 +74,25 @@ results/latest/
 
 These generated directories are ignored by Git. After verifying a real run, preserve the five text files in `evidence/week1/` with a provenance note linking its Actions run and source commit. See [evidence instructions](evidence/README.md). This is necessary because uploaded CI artifacts expire. Keep the raw report intact; do not replace it with an illustrative example. Do not commit binaries, credentials, disk images, or files larger than 50 MB.
 
+The `redzone` CI job runs `bash scripts/run_redzone.sh` separately from the smoke test. It saves `results/redzone/environment.txt`, `build.log`, `summary.txt`, `trials.tsv`, and the raw `logs/` directory as an `asan-redzone-<source SHA>` artifact. The 84 trials consist of 42 valid controls and 42 immediate one-byte boundary violations, with three repetitions per allocation size and mode. See [Claim 1](docs/claim1.md) for the exact protocol and interpretation.
+
 ## Repository layout
 
 ```text
 examples/heap_bounds.c         Original intentional-bug demo and safe control
 scripts/run_smoke.sh           Build, run, and check both modes
+examples/heap_redzone.c        Parameterized heap-boundary experiment
+scripts/run_redzone.sh         Run and check repeated boundary trials
 scripts/collect_environment.sh Record the environment and source identity
 docs/environment.md           Observed preparation environment and deviations
+docs/claim1.md                First paper claim, protocol, and result record
 evidence/                     Instructions and selected real text logs
 .github/workflows/            Ubuntu automated execution
 ```
 
 ## Next milestones
 
-1. Read the paper and choose 1-3 specific claims, each tied to an original figure or table, with matching metrics and workloads.
+1. Inspect and preserve the Claim 1 CI evidence, then select any additional claim tied to an original figure or table with matching metrics and workloads.
 2. Specify the performance baseline and benchmark procedure; record all deviations from the paper's hardware, tools, and settings.
 3. Perform at least three runs for reported results, present mean and standard deviation, and trace each reported number to committed logs.
 4. Compare paper and reproduced results; investigate discrepancies; add a motivated experiment that changes one factor at a time.

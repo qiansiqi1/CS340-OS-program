@@ -11,7 +11,8 @@ date -u '+%Y-%m-%dT%H:%M:%SZ'
 printf '\n=== Source ===\n'
 git rev-parse HEAD
 git status --short
-sha256sum examples/heap_bounds.c scripts/collect_environment.sh scripts/run_smoke.sh
+sha256sum examples/heap_bounds.c examples/heap_redzone.c \
+    scripts/collect_environment.sh scripts/run_smoke.sh scripts/run_redzone.sh
 printf '\n=== Operating system ===\n'
 cat /etc/os-release
 uname -srvmo

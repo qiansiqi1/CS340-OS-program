@@ -36,6 +36,8 @@ Do not interpret the planned settings as measurements. `environment.txt` in a re
 
 ## Deviations from the paper
 
+The first focused claim and its deviations are documented in [Claim 1](claim1.md). The table below describes the original smoke-test milestone.
+
 This milestone has not attempted to reconstruct the paper's original evaluation environment. Original values must be extracted from the paper when the team selects its experimental claims; unverified numbers are intentionally omitted here.
 
 | Item | Paper setting | Week 1 setting | Reason / consequence |
