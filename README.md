@@ -1,5 +1,7 @@
 # CS340: AddressSanitizer Replication
 
+[简体中文版](README.zh-CN.md)
+
 This repository prepares a reproducible AddressSanitizer (ASan) smoke test and a focused heap-redzone experiment for **AddressSanitizer: A Fast Address Sanity Checker**, Konstantin Serebryany, Derek Bruening, Alexander Potapenko, and Dmitry Vyukov, USENIX ATC 2012 (paper 8 in the course list).
 
 - [Original paper](https://www.usenix.org/system/files/conference/atc12/atc12-final39.pdf)
