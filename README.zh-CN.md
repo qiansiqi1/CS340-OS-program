@@ -60,7 +60,7 @@
 
 3. 修改`.github/workflows/asan‑smoke.yml`，新增`perf‑bench`任务，Actions自动执行测试并把原始结果作为Artifacts上传。
 
-4. 更新`docs/claim1.md`实验记录文档，预置实验环境、数据表格、论文对比、噪声局限性说明。
+4. 更新`docs/claim2.md`实验记录文档。
 
 
 **当前状态：**代码与配置已提交，实验流程就绪；尚未填充真实实验数值。
@@ -69,14 +69,14 @@
 
 1. 运行Actions，下载性能原始数据；
 
-2. 本地手工计算平均值、标准差，填写`claim1.md`；
+2. 本地手工计算平均值、标准差，填写`claim2.md`；
 
 3. 和论文结果对比，分析差异原因；
 
 4. 按规范保存Artifact压缩包至evidence，记录运行链接与commit，为第三部分补充实验做准备。
 
 新增文件：
-`perf_bench/perf_micro.c`、`scripts/run_perf.sh`、更新`docs/claim1.md`，修改`asan‑smoke.yml`。
+`perf_bench/perf_micro.c`、`scripts/run_perf.sh`、`docs/claim2.md`，修改`asan‑smoke.yml`。
 
 ## 新同学怎么上手
 
