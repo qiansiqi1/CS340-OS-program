@@ -48,6 +48,36 @@
 
 接手第一部分的人，下一步是查看最新的 Actions 运行，下载两套测试的日志，核对实际输出，再按 `evidence/README.md` 保存证据并更新结果记录。
 
+## 第二周：第二部分性能复现实验 进度更新
+
+本周完成项目第二部分ASan性能复现的实验框架搭建。
+
+已完成：
+
+1. 新建`perf_bench/perf_micro.c`微基准程序，大量循环`malloc/free`，使用‑O2优化，用于对比原生与ASan版本耗时。
+
+2. 新增`scripts/run_perf.sh`自动化脚本，编译两个版本、多次运行采集时间，输出原始tsv数据，运行后自动删除可执行文件。
+
+3. 修改`.github/workflows/asan‑smoke.yml`，新增`perf‑bench`任务，Actions自动执行测试并把原始结果作为Artifacts上传。
+
+4. 更新`docs/claim1.md`实验记录文档，预置实验环境、数据表格、论文对比、噪声局限性说明。
+
+
+**当前状态：**代码与配置已提交，实验流程就绪；尚未填充真实实验数值。
+
+待办：
+
+1. 运行Actions，下载性能原始数据；
+
+2. 本地手工计算平均值、标准差，填写`claim1.md`；
+
+3. 和论文结果对比，分析差异原因；
+
+4. 按规范保存Artifact压缩包至evidence，记录运行链接与commit，为第三部分补充实验做准备。
+
+新增文件：
+`perf_bench/perf_micro.c`、`scripts/run_perf.sh`、更新`docs/claim1.md`，修改`asan‑smoke.yml`。
+
 ## 新同学怎么上手
 
 ### 1. 先认识仓库
