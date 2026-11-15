@@ -1,4 +1,4 @@
-Claim 2: ASan Performance Overhead Reproduction
+## Claim 2: ASan Performance Overhead Reproduction
 
 Experiment Objective
 
