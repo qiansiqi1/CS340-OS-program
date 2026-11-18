@@ -108,3 +108,13 @@ Each member should contribute through their own GitHub account. Every commit mes
 The demo, scripts, workflow, and documentation are newly authored for this course project with AI assistance; they are not copied from the paper or an upstream repository. The installed compiler/runtime come from Ubuntu's LLVM packages. Their versions are recorded per run, and their upstream project is [llvm/llvm-project](https://github.com/llvm/llvm-project), licensed under [Apache-2.0 WITH LLVM-exception](https://github.com/llvm/llvm-project/blob/main/LICENSE.TXT). No upstream compiler source is vendored or modified in this milestone. A starting upstream source commit and modified-upstream-file list are therefore not applicable yet; any later source-based work must record those details and include the required upstream license.
 
 AI assistance was used to draft the initial documentation, demo, automation, and checks. Student review, execution evidence, individual contributions, and any later AI use must be accurately reflected in the final report. A successful smoke test demonstrates only the narrowly stated behavior above.
+
+## Week 3 performance results
+
+Run `python3 scripts/run_week3_perf.py` with Linux, GCC/libasan, Python
+3.9+, Git and ldd. The runner builds the Week 2 allocation benchmark
+and writes timings, tool information, raw process logs and statistics
+to `results/week3/`. The two measured batches and a visual comparison
+are documented in [Week 3 performance and quarantine](docs/week3-performance.md).
+On the measured host, allow roughly 10 seconds per batch. Use the
+preserved evidence for reported numbers.
