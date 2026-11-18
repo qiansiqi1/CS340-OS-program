@@ -1,0 +1,17 @@
+utc=2026-11-17T15:30:09Z
+source_commit=0812304f6cfbc33897008c41aeafb1298db29575
+benchmark_sha256=7c50d94de4cc9d10003d0e766c5ce902351c0219a6c4badf3a01799bbce0bcfb
+runner_sha256=f72307924727ea7c8ab7f1275a3780e539e12da7332ff295307fa75be113e78c
+os=Linux-6.18.57-x86_64-with-glibc2.41
+compiler=gcc (Debian 14.2.0-19) 14.2.0
+libc=glibc 2.41
+cpu=AMD EPYC 9V74 80-Core Processor
+cpu_affinity_count=9
+memory=MemTotal:       10206472 kB
+cgroup_memory_max=unavailable
+repetitions=9; warmup=one per variant; clock=perf_counter_ns
+ASAN_OPTIONS=detect_leaks=0:malloc_context_size=1:halt_on_error=1:quarantine_size_mb={0,64}
+build_native=gcc -O2 -g -fno-pie -no-pie perf_bench/perf_micro.c -o '<temporary>/native'
+build_asan=gcc -O2 -g -fno-pie -no-pie -fsanitize=address perf_bench/perf_micro.c -o '<temporary>/asan'
+asan_runtime=libasan.so.8 => /lib/x86_64-linux-gnu/libasan.so.8 (0x00007f191d2d4000)
+asan_runtime_sha256=f5c57422d80671ced6cffe350f92c8ab9bec23fda9b155658aac630d2bc2a240

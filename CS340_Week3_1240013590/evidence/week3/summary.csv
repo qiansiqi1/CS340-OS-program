@@ -1,0 +1,4 @@
+variant,n,mean_seconds,sample_sd_seconds,ratio_to_native,slowdown_pct
+native,9,0.115096604,0.017122510,1.000000,0.0000
+asan_q0,9,0.260536165,0.030947732,2.263630,126.3630
+asan_q64,9,0.338746319,0.162754637,2.943148,194.3148
