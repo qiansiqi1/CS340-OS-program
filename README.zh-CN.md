@@ -2,102 +2,49 @@
 
 ## 这个项目是做什么的
 
-我们要尝试复现论文 [AddressSanitizer: A Fast Address Sanity Checker](https://www.usenix.org/system/files/conference/atc12/atc12-final39.pdf) 中的一部分实验。AddressSanitizer，简称 ASan，是一个帮助 C/C++ 程序发现内存越界等错误的工具。这个项目会先用很小的程序确认它能找出故意制造的越界写入，再选择论文中的一项结果做更正式的测试和比较。
-
-目前仓库里的程序是**实验用的小例子**，不是一套完整的论文复现。它们的作用是让后来接手的人先跑通环境，知道正常访问和越界访问各会出现什么结果。
+我们要尝试复现论文 [AddressSanitizer: A Fast Address Sanity Checker](https://www.usenix.org/system/files/conference/atc12/atc12-final39.pdf) 中的一部分实验。AddressSanitizer，简称 ASan，是一个帮助 C/C++ 程序发现内存越界等错误的工具。仓库提供用于验证 ASan 报告的基础测试和堆红区实验。
 
 ## 最后要交付什么
 
-完成时，项目应有以下内容：
-
-1. **能重复运行的代码和步骤：**别人按照说明准备环境、运行脚本，也能得到同类结果。
-2. **真实的运行记录：**保留运行环境、程序输出、错误报告和每次测试的结果，让报告里的数字有出处。
-3. **与论文的对照：**选定论文中的具体图或表，说明我们测了什么、与论文结果是否一致，以及实验环境有哪些差别。需要报告的数值至少测三次，并给出平均值和标准差。
-4. **最终报告：**写清目标、方法、结果、差异原因、局限性，以及一个只改变单一因素的补充实验。
+1. **可复查的代码和步骤。** 记录环境、运行命令和输出位置。
+2. **真实的运行记录。** 保留原始输出、错误报告、源提交和每次测试的结果。
+3. **与论文对照。** 指明原文图表、实验设置差异和可比指标。对报告中的性能数值至少测量三次，给出平均值和标准差。
+4. **最终报告。** 写清目标、方法、结果、差异原因、局限性和一次只改变一个因素的补充实验。
 
 ## 四份任务怎么分
 
 ### 第一部分：把错误检测实验跑通
 
-准备运行环境，先对比一次正常写入和一次故意越界写入，再测试不同内存大小下的左右边界。保存每次运行的原始日志。完成后，别人应能按脚本重复测试，并从日志中看到正常访问没有报错、越界访问被指出位置。**仓库目前主要完成了这一部分的代码，证据还待补齐。**
+对照正常访问和 ASan 报告，测试不同分配大小的左右边界，保存每次运行的原始日志。
 
 ### 第二部分：复现论文中的一项性能结果
 
-从论文选一个明确的图或表，确定测试对象、比较方式和计算方法。在同一环境下运行有 ASan 和没有 ASan 的版本，至少重复三次。完成后，要有完整步骤、原始数据、平均值与标准差，并写清与论文设置的差异。
+选择论文图表，在同一环境下多次测量原生版本与 ASan 版本。保存原始数据并说明统计方法和与论文的差异。
 
 ### 第三部分：分析结果并做补充实验
 
-对比第一、二部分与论文的结论，解释相同或不同之处。再设计一个有理由的补充实验，每次只改变一个因素，并写出报告的主要内容。完成后，每个结论都应能追溯到日志或数据，同时说明测试的局限性。
+对比前两部分与论文结论，分析差异。补充实验每次改变一个因素，报告中的结论应能追溯到日志或数据。
 
 ### 第四部分：交付前整理
 
-检查说明是否易懂，统一图表与用词，修正链接、错字和排版，核对报告中的数字与日志。让新同学能按说明复查结果。这一部分只做细节完善，不承担决定项目能否运行的核心实验。
+核对报告数字与原始日志，统一用词和图表，修正链接、错字和排版，让新同学能按说明复查结果。
 
-四部分是工作分工，不代表四部分都已完成。第二、三部分的具体测试内容，要在阅读原论文后确定，不能用第一部分的小程序结果代替。
+## 分支和证据状态
 
-## 第一周：第一部分已经做到哪一步
-
-第一周的代码截至提交 `bdba414`。当时已放入以下内容：
-
-- `examples/heap_bounds.c` 和 `scripts/run_smoke.sh`：分配 8 字节，先在范围内写入，再故意越界写入 1 字节；脚本会检查两种结果是否符合预期。
-- `examples/heap_redzone.c` 和 `scripts/run_redzone.sh`：分别测试 1、7、8、9、16、31、64 字节的内存；对每种大小测试左、右两种正常访问和左、右两种越界访问，每种情况重复三次，共 84 次。
-- `.github/workflows/asan-smoke.yml`：让 GitHub Actions 在 Ubuntu 上自动安装工具，运行上述两套测试并上传日志。
-- `docs/environment.md`、`docs/claim1.md` 和 `evidence/README.md`：记录准备环境、第一项论文主张的测试范围，以及保存证据的方法。
-
-**已确认与待确认要分开看：**仓库原有说明记录，基础测试在提交 `2c6e30f` 的 GitHub Actions 运行中通过。随后提交了更完整的边界测试代码，但 `docs/claim1.md` 中的实际结果仍标为“待填写”。仓库里的 `evidence/` 也还没有保存真实运行日志。因此，现阶段可以说“测试程序和自动运行流程已写好”，不能说“全部实验结果已完成并验证”。
-
-接手第一部分的人，下一步是查看最新的 Actions 运行，下载两套测试的日志，核对实际输出，再按 `evidence/README.md` 保存证据并更新结果记录。
-
-## 第二周：第二部分性能复现实验 进度更新
-
-本周完成项目第二部分ASan性能复现的实验框架搭建。
-
-已完成：
-
-1. 新建perf_bench/perf_micro.c微基准程序，大量循环malloc/free，使用‑O2优化，用于对比原生与ASan版本耗时。
-
-2. 新增scripts/run_perf.sh自动化脚本，编译两个版本、多次运行采集时间，输出原始tsv数据，运行后自动删除可执行文件。
-
-3. 修改.github/workflows/asan‑smoke.yml，新增perf‑bench任务，Actions自动执行测试并把原始结果作为Artifacts上传。
-
-4. 更新docs/claim1.md实验记录文档，预置实验环境、数据表格、论文对比、噪声局限性说明。
-
-
-**当前状态：**代码与配置已提交，实验流程就绪；尚未填充真实实验数值。
-
-待办：
-
-1. 运行Actions，下载性能原始数据；
-
-2. 本地手工计算平均值、标准差，填写claim1.md；
-
-3. 和论文结果对比，分析差异原因；
-
-4. 按规范保存Artifact压缩包至evidence，记录运行链接与commit，为第三部分补充实验做准备。
-
-新增文件：
-perf_bench/perf_micro.c、scripts/run_perf.sh、更新docs/claim1.md，修改asan‑smoke.yml。
+- 默认分支 `main` 的工作流运行 `smoke` 和 `redzone`。[Actions 运行 #10](https://github.com/qiansiqi1/CS340-OS-program/actions/runs/43695706254) 对应源提交 `e8aed04`，两项任务均通过，并上传了两份日志。报告中的实测值仍需逐项核对原始日志。
+- 第二部分的性能基准和运行脚本见 [`1240011613CHENYANTONG` 分支](https://github.com/qiansiqi1/CS340-OS-program/tree/1240011613CHENYANTONG)。第三周性能结果见[独立提交](https://github.com/qiansiqi1/CS340-OS-program/commit/8b9dbd3c183ce8e4711e6391aab97cefb78b9dd1)。该提交的 [Actions 运行](https://github.com/qiansiqi1/CS340-OS-program/actions/runs/44249774534) 执行的是 `smoke` 和 `redzone`。引用性能数据时，从对应实验分支确认实际运行环境、原始数据和统计口径。
 
 ## 新同学怎么上手
 
-### 1. 先认识仓库
+先阅读[英文 README](README.md)、[环境说明](docs/environment.md)和[堆红区实验记录](docs/claim1.md)。
 
-打开[项目仓库](https://github.com/qiansiqi1/CS340-OS-program)。先看根目录的英文 `README.md`，再看 `examples/`（测试程序）、`scripts/`（运行脚本）、`docs/`（实验说明）和 `evidence/`（证据保存说明）。本中文版位于仓库根目录，文中这些路径都指向仓库里的文件。
+### GitHub Actions
 
-不用一开始就读懂所有 C 代码。先记住：`safe` 是正常访问；`overflow` 是向分配范围右边多写一个字节；`underflow` 是向左边多写一个字节。越界程序退出并显示错误，正是测试希望看到的情况。
+在 [ASan smoke test 工作流](https://github.com/qiansiqi1/CS340-OS-program/actions/workflows/asan-smoke.yml)查看已有运行。有运行权限时，可以选择 **Run workflow**，然后选择 `main`。运行结束后检查两个任务的状态，并在 **Artifacts** 下载 `asan-smoke-<源提交 SHA>` 和 `asan-redzone-<源提交 SHA>`。两份 artifact 的保留期限为 30 天。
 
-### 2. 最省事的运行方法：GitHub Actions
+### 本地 Ubuntu
 
-如果电脑上没有 Ubuntu，且账号有这个仓库的运行权限，可以打开[Actions 页面](https://github.com/qiansiqi1/CS340-OS-program/actions/workflows/asan-smoke.yml)，选择 **Run workflow**，在默认分支上运行。没有运行权限时，仍可先查看已有运行和日志。工作流里有两项任务：
-
-- `smoke`：最简单的一组正常/越界对照。
-- `redzone`：不同内存大小和左右边界的 84 次测试。
-
-等运行结束后，点进这次运行，分别检查两项任务有没有通过。页面下方的 **Artifacts** 提供 `asan-smoke-<提交编号>` 和 `asan-redzone-<提交编号>` 两份日志压缩包；它们只保留 30 天。若任务失败，先打开失败步骤和日志，不要只看页面上的红色标记。
-
-### 3. 想在自己电脑上运行
-
-本地运行需要 Ubuntu 24.04 x86-64（实体机、虚拟机或 WSL2 中的 Ubuntu 均可）。**只有 Git Bash 的 Windows 电脑不能直接运行这套 Linux 脚本。**在 Ubuntu 终端执行：
+使用 Ubuntu 24.04 x86-64，实体机、虚拟机或 WSL2 中的 Ubuntu 均可。在仓库根目录运行两个脚本。已有工作副本时，先确认所在分支和源提交。
 
 ```bash
 sudo apt-get update
@@ -108,19 +55,36 @@ bash scripts/run_smoke.sh
 bash scripts/run_redzone.sh
 ```
 
-如果仓库已经下载过，进入 `CS340-OS-program` 目录后先执行 `git pull`，再运行两个脚本。不要直接双击 `.sh` 文件。
+### 从原始日志复查报告数字
 
-### 4. 到哪里看结果
+| 核对项 | 文件 | 核对方法 |
+| --- | --- | --- |
+| 源提交和环境 | 两份 artifact 中的 `environment.txt` | 将 `Source` 下的完整 SHA 与 Actions 运行和 artifact 名称中的 SHA 核对 |
+| 基础测试（`smoke`） | `results/latest/summary.txt`、`safe.log`、`overflow.log` | 正常访问应退出 0，越界访问应退出 1。检查 ASan 错误类型、写入大小和源位置 |
+| 堆红区实验（`redzone`） | `results/redzone/summary.txt`、`trials.tsv`、`logs/` | 核对每行的模式、退出状态和判定，按最后一列打开原始日志，再将通过数与摘要核对 |
 
-运行脚本后，先看这两个概览文件：
+表中的 `results/` 路径适用于本地运行。下载的 artifact 解压后可直接查看同名文件。故意越界的单个程序退出 1 是预期行为，整个脚本的通过状态由摘要给出。
 
-- `results/latest/summary.txt`：基础测试的结果。出现 `PASS` 代表正常访问成功，且越界写入被 ASan 报告。
-- `results/redzone/summary.txt`：边界测试的结果。出现 `PASS` 代表脚本检查的 84 次测试都符合预期；具体每次结果在 `results/redzone/trials.tsv`。
+在 `results/redzone/` 或对应 artifact 的解压目录中运行下面的命令，按模式复核通过数和试验总数。协议规定每种模式各有 21 次试验，合计 84 次。其中 `left` 和 `right` 共 42 次正常访问，`underflow` 和 `overflow` 共 42 次越界访问。
 
-如果需要核对细节，看 `results/latest/safe.log`、`overflow.log`，以及 `results/redzone/logs/` 中每次测试的原始输出。`environment.txt` 记录这次运行所用的系统、工具版本和源代码提交。**故意越界的单个程序返回非零状态是正常的；要看整个脚本是否通过。**
+```bash
+awk -F '\t' '
+    NR > 1 {
+        total[$3]++
+        if ($5 == "PASS") passed[$3]++
+    }
+    END {
+        split("left right underflow overflow", modes, " ")
+        for (i = 1; i <= 4; i++) {
+            mode = modes[i]
+            printf "%s: %d/%d\n", mode, passed[mode], total[mode]
+        }
+    }
+' trials.tsv
+```
 
-### 5. 保存和交接证据
+### 保存和交接证据
 
-不要只留下“运行成功”的截图或口头结论。按照[证据保存说明](evidence/README.md)，保存未经改写的文本日志，记下对应的 Actions 运行链接和源代码提交，再把核对过的实际结果填入[第一项实验记录](docs/claim1.md)。日志里可能有每次运行不同的地址和编号，不需要把它们改成一样。
+按照[证据保存说明](evidence/README.md)保存原始文本日志，记录运行链接和源提交，再把核对后的结果填入[堆红区实验记录](docs/claim1.md)。
 
-改动代码或文档时，用自己的 GitHub 账号提交。按项目现有要求，提交消息要包含本人真实学号和全名，再写本次改了什么；不要提交账号密码、二进制程序或无关的大文件。
+用自己的 GitHub 账号提交。提交消息应包含本人真实学号、全名和改动说明。仓库只保存项目需要的代码、文档和选定的文本日志。
