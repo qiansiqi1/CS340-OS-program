@@ -1,6 +1,12 @@
-# Week 1 execution evidence
+# Execution evidence
 
-No execution logs have been committed yet. This file describes how to preserve evidence after a real run; it is not a substitute for that run.
+Performance evidence is preserved in [week3](week3/) and its
+[single-CPU batch](week3/single-cpu/), including CSVs, environment records
+and execution logs. These are historical Linux/GCC measurements.
+
+Detection evidence for Week 1 / Claim 1 has not been archived here.
+The instructions below describe how to preserve it after inspecting a
+real run; neither a green badge nor this document replaces those logs.
 
 1. Open the repository's **Actions > ASan smoke test** page and inspect a run for the intended source commit. The run must pass; verify the raw safe-control and ASan-report output.
 2. Download the `asan-smoke-<source SHA>` artifact from that run. It contains `environment.txt`, `build.log`, `safe.log`, `overflow.log`, and `summary.txt`.

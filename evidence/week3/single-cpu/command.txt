@@ -1,0 +1,1 @@
+taskset -c 0 python scripts/run_week3_perf.py

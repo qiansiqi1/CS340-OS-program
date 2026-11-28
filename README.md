@@ -12,7 +12,7 @@ This repository prepares a reproducible AddressSanitizer (ASan) smoke test and a
 
 The first milestone checks that we can build an instrumented C program, execute an in-bounds control, and obtain a symbolized ASan report for a one-byte heap-buffer overflow. This is an installation and instrumentation check, **not a reproduction of the paper's performance results or detection coverage**.
 
-The smoke test passed in GitHub Actions for source commit `2c6e30f` (the run's raw logs still need to be preserved in this repository). A separate experiment now targets the paper's Section 3.5 claim about accesses within heap redzones, using the shadow-memory layout in Figure 1. Its protocol, result fields, and limitations are in [Claim 1](docs/claim1.md). Treat its results as verified only after the new CI job passes and its raw logs have been inspected. See [environment notes](docs/environment.md) and [evidence instructions](evidence/README.md). No uninspected output in this README is represented as a measured result.
+The smoke test passed in GitHub Actions for source commit `2c6e30f` (the run's raw logs still need to be preserved in this repository). A separate experiment now targets the paper's Section 3.5 claim about accesses within heap redzones, using the shadow-memory layout in Figure 1. Its protocol, result fields, and limitations are in [Claim 1](docs/claim1.md). The repository progress notes link passing smoke/redzone CI runs, but the Claim 1 result table remains pending until the raw logs are inspected and archived. See [environment notes](docs/environment.md) and [evidence instructions](evidence/README.md). No uninspected output in this README is represented as a measured result.
 
 ## Setup: Ubuntu 24.04 x86-64
 
@@ -95,9 +95,9 @@ evidence/                     Instructions and selected real text logs
 ## Next milestones
 
 1. Inspect and preserve the Claim 1 CI evidence, then select any additional claim tied to an original figure or table with matching metrics and workloads.
-2. Specify the performance baseline and benchmark procedure; record all deviations from the paper's hardware, tools, and settings.
-3. Perform at least three runs for reported results, present mean and standard deviation, and trace each reported number to committed logs.
-4. Compare paper and reproduced results; investigate discrepancies; add a motivated experiment that changes one factor at a time.
+2. Integrate and review the preserved Week 3 performance evidence; its workload and modern GCC setup differ from the paper.
+3. Preserve mean and sample SD from the nine measured trials per Week 3 condition, and trace every reported number to the committed CSVs and logs.
+4. Retain the limits of the quarantine extension: the two batches changed direction, and affinity and batch time changed together.
 
 The current smoke test is not a performance benchmark, so it does not provide slowdown estimates, paper-versus-ours comparisons, or claim verdicts.
 
@@ -108,3 +108,23 @@ Each member should contribute through their own GitHub account. Every commit mes
 The demo, scripts, workflow, and documentation are newly authored for this course project with AI assistance; they are not copied from the paper or an upstream repository. The installed compiler/runtime come from Ubuntu's LLVM packages. Their versions are recorded per run, and their upstream project is [llvm/llvm-project](https://github.com/llvm/llvm-project), licensed under [Apache-2.0 WITH LLVM-exception](https://github.com/llvm/llvm-project/blob/main/LICENSE.TXT). No upstream compiler source is vendored or modified in this milestone. A starting upstream source commit and modified-upstream-file list are therefore not applicable yet; any later source-based work must record those details and include the required upstream license.
 
 AI assistance was used to draft the initial documentation, demo, automation, and checks. Student review, execution evidence, individual contributions, and any later AI use must be accurately reflected in the final report. A successful smoke test demonstrates only the narrowly stated behavior above.
+
+## Week 3 performance results
+
+Run `python3 scripts/run_week3_perf.py` with Linux, GCC/libasan, Python
+3.9+, Git and ldd. The runner builds the Week 2 allocation benchmark
+and writes timings, tool information, raw process logs and statistics
+to a unique `results/week3-<UTC timestamp>-<random suffix>/` directory.
+Use `--output-dir results/new-batch` to select a new directory explicitly.
+Existing explicit output directories are rejected to preserve evidence. The two measured batches and a visual comparison
+are documented in [Week 3 performance and quarantine](docs/week3-performance.md).
+On the measured host, allow roughly 10 seconds per batch. Use the
+preserved evidence for reported numbers.
+
+
+The current Actions workflow runs detection only (`smoke` and `redzone`),
+not the performance benchmark. The old `bash scripts/run_perf.sh` command
+now forwards to the Week 3 Python runner and produces the same CSV format.
+The saved historical evidence is unchanged. Fresh runs record working-tree
+status and current source hashes; do not label a dirty integration run as
+one of the preserved historical measurements.
