@@ -28,3 +28,7 @@ This uses modern Ubuntu GCC 13, whereas historical Week 3 measurements used GCC 
 ## First successful execution
 
 [Run 46113854580](https://github.com/qiansiqi1/CS340-OS-program/actions/runs/46113854580) completed successfully for source `69ec605f15add83115506b983d436484371b24e9`. Artifact: `asan-perf-69ec605f15add83115506b983d436484371b24e9-46113854580-1`. This verifies hosted execution and artifact publication; inspect the downloaded raw evidence before reporting its measured values.
+
+## Inspected result batch
+
+The user-supplied artifact for [run 46114837908](https://github.com/qiansiqi1/CS340-OS-program/actions/runs/46114837908), source `fb54e2b2d2f0d6adadc62450f35853aa3e0e83fc`, is independently checked and [archived](../evidence/performance/46114837908-attempt1/). See [Claim 2](claim2.md) for its measured results and limitations; the earlier first-run link above remains an execution milestone.

@@ -1,6 +1,6 @@
 # Replication status and remaining work
 
-Updated 2026-11-28 after inspection of artifacts for `40e5f0f`.
+Updated 2026-11-28 after inspection of detection artifacts for `40e5f0f` and performance artifacts for `fb54e2b`.
 
 ## Current scope
 
@@ -8,7 +8,7 @@ Updated 2026-11-28 after inspection of artifacts for `40e5f0f`.
 | --- | --- | --- |
 | Instrumentation and reporting | Smoke safe/overflow pair, source hashes, symbolized report | Setup works for modern Clang/ASan 18; not paper-wide coverage |
 | Section 3.5 heap redzones | Seven allocation sizes, four modes, three repeats; all raw logs checked | 42/42 sampled immediate single-byte boundary writes detected, 42/42 controls passed; focused support |
-| Section 4 / Figure 2 overhead | Two historical batches; nine trials per condition, raw CSVs and mean/sample SD | About 2.3x zero-quarantine runtime on one allocation workload; not the original SPEC suite, historical host or compiler |
+| Section 4 / Figure 2 overhead | Two historical batches plus one inspected hosted batch; nine trials per condition, raw CSVs and mean/sample SD | Hosted batch: 2.222x (0 MiB), 2.268x (64 MiB); historical zero-quarantine batches about 2.3x on one allocation workload; not the original SPEC suite, historical host or compiler |
 | Section 4.3 motivated quarantine extension | 0/64 MiB comparison in each batch | Runtime effect inconclusive: direction reverses; affinity and batch time changed together |
 | Table 1 memory overhead | Not measured | No memory-overhead conclusion |
 
@@ -16,7 +16,7 @@ This is a focused partial reproduction using a modern installed implementation a
 
 ## Remaining checks, in priority order
 
-1. The revised runner completed [its first hosted Linux execution](https://github.com/qiansiqi1/CS340-OS-program/actions/runs/46113854580) at `69ec605`; inspect the new artifact before updating measured claims. Archive a new batch's environment, raw CSV, summary and execution log; inspect all exits and sample counts. Detection CI does not run this script; the separate [performance workflow](performance-actions.md) now supplies a hosted execution path. Its results must still be inspected before updating measured claims. Preserve historical evidence unchanged, and label Clang detection versus GCC performance separately.
+1. The integrated runner is now validated by the inspected [hosted run at `fb54e2b`](https://github.com/qiansiqi1/CS340-OS-program/actions/runs/46114837908): all 30 executions passed, 27 measured rows matched the logs, and statistics were independently recalculated. The new batch is archived and reported in [Claim 2](claim2.md). Preserve historical evidence unchanged, label Clang detection versus GCC performance separately, and inspect each future batch before reporting it.
 2. Synchronize final English report and slides with measured counts, source SHA and Actions URL; include paper-versus-ours settings, timing mean/sample SD, scope limits, actual member contributions and AI use. Claim 1's 100% describes only these 42 sampled violations. Check final course deliverables separately against the original assignment document.
 3. Correct protocol metadata in the environment collector for future runs: its fixed eight-byte allocation sentence belongs to smoke, not redzone. Keep archived bytes unchanged; existing TSVs and logs establish the true redzone workload.
 4. Tighten reproducibility where practical with pinned environment dependencies. Hosted images/packages move, and these logs record rather than freeze them.
@@ -34,4 +34,4 @@ Use a separate protocol for reads/writes, wider or unaligned accesses and select
 
 A quarantine/use-after-free experiment must record address reuse and detection outcomes: disabling quarantine does not guarantee immediate reuse or deterministic missed detection. Do not infer coverage from runtime alone.
 
-First validate a fresh performance batch, then add peak RSS to strengthen the extension. Broaden detection if time permits. Additional passing smoke runs add less evidence than a missing metric or a controlled comparison.
+A fresh performance batch is now validated and archived. Next add peak RSS to strengthen the extension. Broaden detection if time permits. Additional passing smoke runs add less evidence than a missing metric or a controlled comparison.

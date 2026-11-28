@@ -1,0 +1,18 @@
+run_url=https://github.com/qiansiqi1/CS340-OS-program/actions/runs/46114837908
+source_commit=fb54e2b2d2f0d6adadc62450f35853aa3e0e83fc
+run_attempt=1
+utc=2026-11-28T06:03:36Z
+runner_image=ubuntu24
+runner_image_version=20261122.23.1
+Timing scope: shared GitHub-hosted runner; exploratory microbenchmark, not SPEC replication.
+Linux runnervm0j63q 7.0.0-1020-azure #21~24.04.2-Ubuntu SMP PREEMPT Tue Nov 10 01:36:36 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+Python 3.12.3
+gcc-13	13.3.0-6ubuntu2~24.04.1
+libasan8:amd64	14.2.0-4ubuntu2~24.04.1
+libc6:amd64	2.39-0ubuntu8.12
+python3	3.12.3-0ubuntu2.1

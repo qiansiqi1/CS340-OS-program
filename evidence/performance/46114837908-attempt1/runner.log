@@ -1,0 +1,6 @@
+Evidence directory: /home/runner/work/CS340-OS-program/CS340-OS-program/results/performance-ci/benchmark
+variant,n,mean_seconds,sample_sd_seconds,ratio_to_native,slowdown_pct
+native,9,0.155897525,0.003829263,1.000000,0.0000
+asan_q0,9,0.346330599,0.009403818,2.221527,122.1527
+asan_q64,9,0.353542144,0.008939056,2.267785,126.7785
+

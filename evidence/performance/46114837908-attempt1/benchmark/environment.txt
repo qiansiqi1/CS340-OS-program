@@ -1,0 +1,19 @@
+utc=2026-11-28T06:03:36Z
+source_commit=fb54e2b2d2f0d6adadc62450f35853aa3e0e83fc
+source_status=''
+merge_head=none
+benchmark_sha256=7c50d94de4cc9d10003d0e766c5ce902351c0219a6c4badf3a01799bbce0bcfb
+runner_sha256=4e67c99ac194fff5a1e02149ec530acd1d826e01d3eb0c95e7afc87f93007af3
+os=Linux-7.0.0-1020-azure-x86_64-with-glibc2.39
+compiler=gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+libc=glibc 2.39
+cpu=AMD EPYC 9V74 80-Core Processor
+cpu_affinity_count=4
+memory=MemTotal:       16367500 kB
+cgroup_memory_max=unavailable
+repetitions=9; warmup=one per variant; clock=perf_counter_ns
+ASAN_OPTIONS=detect_leaks=0:malloc_context_size=1:halt_on_error=1:quarantine_size_mb={0,64}
+build_native=gcc-13 -O2 -g -fno-pie -no-pie perf_bench/perf_micro.c -o '<temporary>/native'
+build_asan=gcc-13 -O2 -g -fno-pie -no-pie -fsanitize=address perf_bench/perf_micro.c -o '<temporary>/asan'
+asan_runtime=libasan.so.8 => /lib/x86_64-linux-gnu/libasan.so.8 (0x00007fdc37e00000)
+asan_runtime_sha256=8d5845bdf056b5db4cfb9fff40ad5eeea8f6da05a8ca6f5935a7d1c138ed2558

@@ -16,3 +16,7 @@ The instructions below apply to future runs. Preserve new runs as separate batch
 For a local Ubuntu run, use the same five files from `results/latest/`. Record that it was a local run, retain the exact source commit and hashes, and state whether the checkout was dirty. Never describe a local result as GitHub-hosted or substitute expected output for real output.
 
 Artifacts expire after 30 days. The committed text logs, not just a green badge or expiring artifact link, will support the final course report. A re-run of the evidence-only commit is a different run; the preserved evidence still refers to its original source SHA.
+
+## Inspected hosted performance batch
+
+[evidence/performance/46114837908-attempt1](performance/46114837908-attempt1/) preserves all seven original files for [run 46114837908](https://github.com/qiansiqi1/CS340-OS-program/actions/runs/46114837908), source `fb54e2b2d2f0d6adadc62450f35853aa3e0e83fc`. All 30 executions passed; 27 measured rows match the log and independently recalculated summary. Source hashes match the clean source revision. See its provenance and manifest, and [Claim 2](../docs/claim2.md) for results. This GCC 13.3/libasan8 batch is separate from the historical Week 3 batches.
