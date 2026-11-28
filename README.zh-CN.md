@@ -4,6 +4,140 @@
 
 我们要尝试复现论文 [AddressSanitizer: A Fast Address Sanity Checker](https://www.usenix.org/system/files/conference/atc12/atc12-final39.pdf) 中的一部分实验。AddressSanitizer，简称 ASan，是一个帮助 C/C++ 程序发现内存越界等错误的工具。仓库提供用于验证 ASan 报告的基础测试和堆红区实验。
 
+## 第一次运行：Windows 用户也能直接操作
+
+**电脑没有 Linux 也能运行。推荐使用下面的 GitHub 网页方法，不需要先下载代码、安装编译器或在自己电脑上输入命令。** 程序实际运行在 GitHub 提供的 Ubuntu 电脑上，你的电脑负责打开网页、启动任务和下载结果。
+
+### 第 1 步：登录 GitHub，选择要运行的实验
+
+打开[项目首页](https://github.com/qiansiqi1/CS340-OS-program)，登录拥有本仓库写入权限的账号。只读访问者可以查看公开运行记录，但不能直接在这个仓库启动任务；需要先获得权限，或 Fork 到自己的账号后在自己的仓库启用 Actions。
+
+本项目有两个工作流（可以理解成两套“自动运行步骤”）：
+
+| 你想做什么 | 在 Actions 左侧选择 | 结束后下载什么 |
+| --- | --- | --- |
+| 检查 ASan 能否发现越界错误 | **ASan smoke test** | `asan-smoke-…` 和 `asan-redzone-…` 两个包 |
+| 测量开启 ASan 后程序慢了多少 | **ASan performance benchmark** | `asan-perf-…` 一个包 |
+
+两个实验分别启动。检测实验成功，不代表性能实验也运行过。第一次完整复查项目时，两套都运行一次即可；性能工作流一次就会完成每种配置的九次正式测量，不必手动点击九次。
+
+### 第 2 步：进入 Actions 页面，找到运行按钮
+
+1. 在仓库顶部点击 **Actions**，再点击左侧需要的工作流名称。也可以直接打开[检测工作流](https://github.com/qiansiqi1/CS340-OS-program/actions/workflows/asan-smoke.yml)或[性能工作流](https://github.com/qiansiqi1/CS340-OS-program/actions/workflows/asan-performance.yml)。
+2. 确认现在看到的是“运行记录列表”。**如果屏幕中间是带行号的 `.yml` 代码，你还在 Code 文件页面。** 点击该页面右上角的 **View runs**，或返回顶部 **Actions** 后选择工作流。
+3. 在运行列表上方右侧找到 **Run workflow ▾**，点开它。
+4. 菜单里的 **Branch** 选择 `main`，再点击菜单里面绿色的 **Run workflow**。这一步才真正启动任务。
+5. 稍等并刷新页面，列表中会出现一条新的运行记录。点开这条记录，进入详情页。
+
+### 第 3 步：等待任务完成，查看是否成功
+
+依赖安装和排队可能需要几分钟，不用一直重复点击启动。
+
+- 黄色圆点或旋转图标：正在排队或运行，继续等待。
+- 绿色勾：这次工作流成功完成。
+- 红色叉：运行失败，点击左侧任务，再展开标红的步骤查看错误信息。
+
+检测工作流中应看到 `smoke` 和 `redzone` 两个任务均成功；性能工作流中应看到 `performance` 任务成功。性能结果汇总表在运行的 **Summary**（概览）页面；原始数据在下面介绍的附件里。
+
+检测程序故意制造了越界，所以原始日志里出现 `heap-buffer-overflow`、`ABORTING` 或某个越界用例退出码为 1，是预期现象。**整体是否成功，看任务状态和 `summary.txt`，不要只凭日志里出现 ERROR 判断失败。** 安全用例应退出 0，越界用例应被 ASan 检出。
+
+### 第 4 步：下载结果到自己的电脑
+
+1. 保持在这一次运行的详情页，点击左侧 **Summary**（如果已经在概览页就不用再点）。
+2. 向页面下方滚动，找到 **Artifacts**。它的意思是本次运行生成的可下载文件。
+3. 点击对应附件名称，浏览器会下载一个 ZIP 压缩包。检测实验下载两个包；性能实验下载一个包。
+4. 在 Windows 下载文件夹中右键 ZIP，选择 **全部提取**，然后打开解压后的文件夹。
+
+附件名称包含本次代码版本号（SHA）；性能包还包含运行编号和第几次尝试，用来区分不同运行。例如你这次下载的 `asan-perf-fb54e2b…-46114837908-1.zip`，对应[这条运行记录](https://github.com/qiansiqi1/CS340-OS-program/actions/runs/46114837908)。不必自己修改附件名字来启动程序。
+
+附件只保留 **30 天**，请及时下载。下载后的文件不会自动出现在仓库代码里；需要归档时，再按照[证据说明](evidence/README.md)保存到新的证据目录并记录运行链接。
+
+### 第 5 步：打开哪些文件、怎么看数据
+
+**检测结果：** 解压 `asan-smoke-…` 和 `asan-redzone-…` 后，分别先看 `summary.txt`。
+
+| 文件 | 用途 |
+| --- | --- |
+| 基础测试包中的 `summary.txt` | 检查安全用例、越界用例的退出状态和最终 PASS/FAIL |
+| `safe.log` / `overflow.log` | 安全访问输出、实际 ASan 越界报告 |
+| 红区测试包中的 `summary.txt` | 查看通过数和失败数；全部符合协议时应为 84/84，失败 0 |
+| 红区测试包中的 `trials.tsv` | 每次试验的分配大小、模式、退出状态、判定和对应日志路径 |
+| 红区测试包中的 `logs/` | 每次试验的完整原始输出 |
+| 两个包各自的 `environment.txt` | 本次代码版本、工具版本和运行环境 |
+
+84 次红区试验包含 42 次安全对照和 42 次故意越界，不能把 84 次都写成“检出了越界”。
+
+**性能结果：** 你上传的性能 ZIP 中有下面七个文件，可以按这个顺序看：
+
+| 文件 | 用途与打开方法 |
+| --- | --- |
+| `benchmark/summary.csv` | 先用 Excel 打开，看每种配置的平均耗时、标准差和倍数 |
+| `benchmark/raw.csv` | 查看每次正式测量，共 27 条：三种配置各九条 |
+| `benchmark/execution.log` | 查看运行顺序、退出状态和原始输出；包含预热，共 30 次执行 |
+| `benchmark/environment.txt` | 查看代码版本、CPU、编译器、运行库、编译参数和文件哈希 |
+| `workflow-environment.txt` | 查看这次 Actions 的网址、运行次数、系统镜像和安装的软件版本 |
+| `runner.log` | 查看性能脚本在终端打印的内容 |
+| `setup.log` | 查看安装依赖的记录，安装失败时用它排查 |
+
+`summary.csv` 中的列含义如下：
+
+| 列名 | 通俗解释 |
+| --- | --- |
+| `variant` | `native` 是未开启 ASan；`asan_q0` / `asan_q64` 是开启 ASan、隔离区分别设为 0 / 64 MiB |
+| `n` | 正式测量次数，本协议每种配置为 9 |
+| `mean_seconds` | 平均运行时间，单位秒，越小表示耗时越少 |
+| `sample_sd_seconds` | 多次耗时的波动大小，数值越大说明越不稳定 |
+| `ratio_to_native` | 相对原生程序的耗时倍数；例如 2.2 表示用了约 2.2 倍时间 |
+| `slowdown_pct` | 比原生程序增加的耗时百分比；2.2 倍耗时对应约 120% 增加，不是 220% 增加 |
+
+CSV 可以用 Excel 打开；`.log`、`.txt` 可以用记事本打开；TSV 可用 Excel 导入并选择“制表符”分隔。保留一份原始文件，分析时用副本，避免 Excel 保存时改变原始数据格式。
+
+GitHub 的电脑可能每次不同，性能数据会波动。优先比较同一批次中的三种配置；不要把不同环境的数据混成一批，也不要把微基准结果当作论文 SPEC CPU2006 的精确复现。当前工作流测量时间，**没有测峰值内存**。
+
+### 常见问题
+
+- **找不到 Run workflow：** 先确认不在 `.yml` 代码页面；点击 **View runs** 或顶部 **Actions**，在左侧选中具体工作流。再确认已登录有写入权限的账号，并且 `main` 中有该工作流。浏览器窗口较窄时可适当缩小网页。
+- **看不到 Artifacts：** 先确认在单次运行的 Summary，而不是所有运行的列表；等待运行完成，再向下滚动。下载通常需要登录。超过 30 天的旧附件可能已过期，需要重跑。
+- **失败也有 ZIP：** 工作流会尽可能保存失败时的日志，因此“下载到了附件”不等于实验成功。检查失败步骤和 `setup.log`、`runner.log`，不要把不完整结果填入报告。
+- **只改 README 后性能没有自动运行：** 这是正常的。性能工作流只在相关代码/工作流改变时自动运行；需要新一批数据时用 **Run workflow** 手动启动。
+- **Windows 提示没有 gcc 或 clang：** 网页方法不需要本机编译器。下面的命令只给已经有 Ubuntu 环境的同学使用，不能直接复制到普通 Windows PowerShell 中运行。
+
+## 可选：已经有 Ubuntu 时，在本机运行
+
+如果采用前面的网页方法，这一节可以跳过。以下命令适用于 Ubuntu 24.04 终端（包括装有 Ubuntu 的 WSL2），在项目目录中执行。Git Bash 本身不提供所需 Linux 环境。
+
+第一次使用先安装依赖、下载代码：
+
+```bash
+sudo apt-get update
+sudo apt-get install --yes git clang-18 libclang-rt-18-dev llvm-18 gcc-13 libasan8 python3
+git clone https://github.com/qiansiqi1/CS340-OS-program.git
+cd CS340-OS-program
+```
+
+已经下载过仓库就不要重复 clone；先进入原有目录，确认自己的修改已保存，再切换/更新到需要测试的版本。以下命令均应在能看到 `scripts/`、`examples/`、`perf_bench/` 的项目根目录运行。
+
+分别运行检测和性能实验：
+
+```bash
+# 基础检测；结果在 results/latest/
+bash scripts/run_smoke.sh
+
+# 84 次红区试验；结果在 results/redzone/
+bash scripts/run_redzone.sh
+
+# 三种配置的性能测量；终端会显示本次结果目录
+CC=gcc-13 python3 scripts/run_week3_perf.py
+```
+
+性能结果默认保存在新的 `results/week3-<时间>-<随机标识>/` 目录。也可以指定一个尚不存在的目录：
+
+```bash
+CC=gcc-13 python3 scripts/run_week3_perf.py --output-dir results/my-performance-01
+```
+
+再次运行时换一个新的目录名，避免覆盖已有证据。`results/` 中的数据不会自动上传 GitHub；本地运行也不会生成 Actions 附件。这里的 GCC 13 与网页工作流一致，历史 Week 3 的 GCC 14.2 批次仍是不同环境。
+
 ## 最后要交付什么
 
 1. **可复查的代码和步骤。** 记录环境、运行命令和输出位置。
@@ -51,26 +185,7 @@ python3 scripts/run_week3_perf.py
 
 现有数据支持本分配负载中 ASan 约 2.3 倍运行时间，不代表精确复现论文的 SPEC CPU2006 汇总结果。本次检测计数已核验归档；新性能工作流[首次运行](https://github.com/qiansiqi1/CS340-OS-program/actions/runs/46113854580)已成功，具体统计仍须检查新 artifact 后更新。详见[复现状态及补充建议](docs/replication-status.md)。
 
-## 新同学怎么上手
-
-先阅读[英文 README](README.md)、[环境说明](docs/environment.md)和[堆红区实验记录](docs/claim1.md)。
-
-### GitHub Actions
-
-在 [ASan smoke test 工作流](https://github.com/qiansiqi1/CS340-OS-program/actions/workflows/asan-smoke.yml)查看已有运行。有运行权限时，可以选择 **Run workflow**，然后选择 `main`。运行结束后检查两个任务的状态，并在 **Artifacts** 下载 `asan-smoke-<源提交 SHA>` 和 `asan-redzone-<源提交 SHA>`。两份 artifact 的保留期限为 30 天。
-
-### 本地 Ubuntu
-
-使用 Ubuntu 24.04 x86-64，实体机、虚拟机或 WSL2 中的 Ubuntu 均可。在仓库根目录运行两个脚本。已有工作副本时，先确认所在分支和源提交。
-
-```bash
-sudo apt-get update
-sudo apt-get install --yes git clang-18 libclang-rt-18-dev llvm-18
-git clone https://github.com/qiansiqi1/CS340-OS-program.git
-cd CS340-OS-program
-bash scripts/run_smoke.sh
-bash scripts/run_redzone.sh
-```
+## 进一步核验与交接
 
 ### 从原始日志复查报告数字
 
