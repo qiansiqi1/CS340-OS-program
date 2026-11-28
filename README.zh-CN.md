@@ -49,7 +49,7 @@ sudo apt-get install --yes gcc python3
 python3 scripts/run_week3_perf.py
 ```
 
-现有数据支持本分配负载中 ASan 约 2.3 倍运行时间，不代表精确复现论文的 SPEC CPU2006 汇总结果。本次检测计数已核验归档；合并后性能脚本的首次 Linux 实测仍待完成。详见[复现状态及补充建议](docs/replication-status.md)。
+现有数据支持本分配负载中 ASan 约 2.3 倍运行时间，不代表精确复现论文的 SPEC CPU2006 汇总结果。本次检测计数已核验归档；新性能工作流[首次运行](https://github.com/qiansiqi1/CS340-OS-program/actions/runs/46113854580)已成功，具体统计仍须检查新 artifact 后更新。详见[复现状态及补充建议](docs/replication-status.md)。
 
 ## 新同学怎么上手
 
