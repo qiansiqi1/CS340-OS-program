@@ -8,4 +8,4 @@
 # Keep archived artifact checksums stable across Windows and Linux checkouts.
 evidence/week1/** text eol=lf
 evidence/claim1/** text eol=lf
-evidence/performance/** text eol=lf
+evidence/performance/** -text
