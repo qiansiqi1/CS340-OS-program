@@ -1,0 +1,7 @@
+Paper claim: Section 3.5, out-of-bounds accesses within heap redzones are detected.
+Scope: one-byte writes immediately before or after 1, 7, 8, 9, 16, 31, and 64-byte allocations.
+Repetitions per size/mode: 3
+Passed trials: 84 / 84
+Failed trials: 0
+Expected controls: 42; expected boundary violations: 42
+PASS: all safe controls and immediate heap boundary violations behaved as expected.

@@ -1,0 +1,89 @@
+name: ASan performance benchmark
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/asan-performance.yml
+      - scripts/run_week3_perf.py
+      - perf_bench/perf_micro.c
+
+permissions:
+  contents: read
+
+jobs:
+  performance:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      CC: gcc-13
+      PYTHONUNBUFFERED: '1'
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install GCC, ASan runtime, and Python
+        run: |
+          mkdir -p results/performance-ci
+          sudo apt-get update 2>&1 | tee results/performance-ci/setup.log
+          sudo apt-get install --yes gcc-13 libasan8 python3 git libc-bin 2>&1 | tee -a results/performance-ci/setup.log
+
+      - name: Record workflow provenance
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SOURCE_SHA: ${{ github.sha }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          {
+            printf 'run_url=%s\nsource_commit=%s\nrun_attempt=%s\n' "$RUN_URL" "$SOURCE_SHA" "$RUN_ATTEMPT"
+            printf 'utc='; date -u '+%Y-%m-%dT%H:%M:%SZ'
+            printf 'runner_image=%s\nrunner_image_version=%s\n' "${ImageOS:-unknown}" "${ImageVersion:-unknown}"
+            printf 'Timing scope: shared GitHub-hosted runner; exploratory microbenchmark, not SPEC replication.\n'
+            uname -a
+            "$CC" --version
+            python3 --version
+            dpkg-query -W gcc-13 libasan8 libc6 python3
+          } > results/performance-ci/workflow-environment.txt 2>&1
+
+      - name: Run three conditions with nine measured trials each
+        run: |
+          python3 scripts/run_week3_perf.py --output-dir results/performance-ci/benchmark 2>&1 | tee results/performance-ci/runner.log
+
+      - name: Publish timing summary
+        run: |
+          python3 - <<'PY'
+          import csv
+          import os
+          from pathlib import Path
+
+          folder = Path('results/performance-ci/benchmark')
+          for name in ('environment.txt', 'raw.csv', 'summary.csv', 'execution.log'):
+              if not (folder / name).is_file():
+                  raise SystemExit(f'Missing benchmark evidence: {name}')
+          with (folder / 'summary.csv').open() as stream:
+              rows = list(csv.DictReader(stream))
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              summary.write('## Allocation benchmark timing\n\n')
+              summary.write('One warmup and nine measured trials per condition. Wall time includes process startup and shutdown.\n\n')
+              summary.write('| Condition | n | Mean (s) | Sample SD (s) | Ratio to native | Slowdown (%) |\n')
+              summary.write('| --- | ---: | ---: | ---: | ---: | ---: |\n')
+              for row in rows:
+                  summary.write('| ' + ' | '.join(row[key] for key in (
+                      'variant', 'n', 'mean_seconds', 'sample_sd_seconds',
+                      'ratio_to_native', 'slowdown_pct')) + ' |\n')
+              summary.write('\nShared hosted hardware can vary between runs. These measurements do not reproduce the paper SPEC aggregate or establish a quarantine effect. Peak RSS is not measured.\n')
+              summary.write('\nDownload the asan-perf artifact below for CSVs, raw execution logs, build/environment information and this run URL. Retention: 30 days.\n')
+          PY
+
+      - name: Save performance evidence, including partial failure logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: asan-perf-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: results/performance-ci/
+          if-no-files-found: warn
+          retention-days: 30

@@ -12,7 +12,7 @@ This repository prepares a reproducible AddressSanitizer (ASan) smoke test and a
 
 The first milestone checks that we can build an instrumented C program, execute an in-bounds control, and obtain a symbolized ASan report for a one-byte heap-buffer overflow. This is an installation and instrumentation check, **not a reproduction of the paper's performance results or detection coverage**.
 
-The smoke test passed in GitHub Actions for source commit `2c6e30f` (the run's raw logs still need to be preserved in this repository). A separate experiment now targets the paper's Section 3.5 claim about accesses within heap redzones, using the shadow-memory layout in Figure 1. Its protocol, result fields, and limitations are in [Claim 1](docs/claim1.md). The repository progress notes link passing smoke/redzone CI runs, but the Claim 1 result table remains pending until the raw logs are inspected and archived. See [environment notes](docs/environment.md) and [evidence instructions](evidence/README.md). No uninspected output in this README is represented as a measured result.
+For source commit `40e5f0f`, [Actions #26](https://github.com/qiansiqi1/CS340-OS-program/actions/runs/46110961155) passed. The downloaded artifacts have been inspected and archived unchanged: all 42 immediate one-byte heap-boundary violations were detected and all 42 safe controls passed. [Claim 1](docs/claim1.md) records per-size results, actual environments and limits. See [smoke evidence](evidence/week1/), [redzone evidence](evidence/claim1/) and [replication status](docs/replication-status.md). [Claim 2](docs/claim2.md) preserves historical performance data; the integrated performance runner still needs a fresh Linux run.
 
 ## Setup: Ubuntu 24.04 x86-64
 
@@ -94,8 +94,8 @@ evidence/                     Instructions and selected real text logs
 
 ## Next milestones
 
-1. Inspect and preserve the Claim 1 CI evidence, then select any additional claim tied to an original figure or table with matching metrics and workloads.
-2. Integrate and review the preserved Week 3 performance evidence; its workload and modern GCC setup differ from the paper.
+1. Claim 1 evidence is inspected and archived. Define a separate protocol and evidence batch for any broader detection experiment.
+2. Run the integrated performance runner on Linux and archive a fresh batch; the historical workload and modern GCC setup differ from the paper.
 3. Preserve mean and sample SD from the nine measured trials per Week 3 condition, and trace every reported number to the committed CSVs and logs.
 4. Retain the limits of the quarantine extension: the two batches changed direction, and affinity and batch time changed together.
 
@@ -122,8 +122,10 @@ On the measured host, allow roughly 10 seconds per batch. Use the
 preserved evidence for reported numbers.
 
 
-The current Actions workflow runs detection only (`smoke` and `redzone`),
-not the performance benchmark. The old `bash scripts/run_perf.sh` command
+The detection workflow runs `smoke` and `redzone`. The separate
+[ASan performance benchmark workflow](.github/workflows/asan-performance.yml)
+runs the performance script with GCC 13 on Ubuntu and uploads CSVs and logs.
+See [web execution and downloads](docs/performance-actions.md). The old `bash scripts/run_perf.sh` command
 now forwards to the Week 3 Python runner and produces the same CSV format.
 The saved historical evidence is unchanged. Fresh runs record working-tree
 status and current source hashes; do not label a dirty integration run as

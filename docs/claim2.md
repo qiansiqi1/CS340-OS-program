@@ -2,7 +2,7 @@
 
 ## Status and scope
 
-The Week 2 allocation microbenchmark and the Week 3 performance runner are integrated in this local review checkout. This is a focused experiment on runtime overhead, not a matched replication of the paper's SPEC CPU2006 aggregate.
+The Week 2 allocation microbenchmark and the Week 3 performance runner were integrated into main at `40e5f0f`. The inspected detection artifacts do not execute or validate this performance runner. This is a focused experiment on runtime overhead, not a matched replication of the paper's SPEC CPU2006 aggregate.
 
 The original Week 2 plan used Clang 18, Ubuntu CI and five trials. It did not preserve a completed five-trial result table. Those planned settings are not the provenance of the committed Week 3 measurements.
 
@@ -35,6 +35,6 @@ python3 scripts/run_week3_perf.py --output-dir results/performance-review
 
 Default output uses a unique directory under `results/`. An explicit existing directory is rejected to protect earlier evidence. `bash scripts/run_perf.sh` is a compatibility wrapper for this runner, with the same output format and arguments.
 
-The current Actions workflow runs only `smoke` and `redzone`. It does not run a performance job or publish an `asan-perf-results` artifact. Run this experiment locally on Linux until a separately validated performance CI job is added. A hosted CI run is also not a controlled performance platform.
+The separate `ASan performance benchmark` workflow runs this script on Ubuntu 24.04 with GCC 13/libasan8, supports manual dispatch, and uploads `asan-perf-<source SHA>-<run ID>-<attempt>`. See [web execution and downloads](performance-actions.md). The detection workflow still runs only smoke/redzone. This new workflow is distinct from the historical GCC 14.2 measurements; shared hosted CI is not a controlled performance platform.
 
-The committed Week 3 evidence remains historical and unchanged. A run from this integrated, uncommitted checkout must record its dirty state and current hashes, and must not be presented as the historical run.
+The committed Week 3 evidence remains historical and unchanged. The revised runner still needs a fresh Linux execution after integration. Record the actual source commit, working-tree state and hashes, and preserve outputs in a new batch. Do not present a new run as a historical measurement. See [replication status](replication-status.md).

@@ -4,9 +4,9 @@ Performance evidence is preserved in [week3](week3/) and its
 [single-CPU batch](week3/single-cpu/), including CSVs, environment records
 and execution logs. These are historical Linux/GCC measurements.
 
-Detection evidence for Week 1 / Claim 1 has not been archived here.
-The instructions below describe how to preserve it after inspecting a
-real run; neither a green badge nor this document replaces those logs.
+Detection evidence for source `40e5f0f` is now archived: [week1](week1/) contains the five original smoke files; [claim1](claim1/) contains all 88 original redzone files, including 84 trial logs. [Actions #26](https://github.com/qiansiqi1/CS340-OS-program/actions/runs/46110961155) succeeded. Raw-log inspection confirms 42/42 violations detected and 42/42 controls passed. Each batch includes provenance and an SHA-256 manifest; all artifact members retain their original bytes. See the provenance notes for the historical fixed smoke-allocation metadata caveat.
+
+The instructions below apply to future runs. Preserve new runs as separate batches rather than silently overwriting previous evidence; neither a green badge nor this document replaces those logs.
 
 1. Open the repository's **Actions > ASan smoke test** page and inspect a run for the intended source commit. The run must pass; verify the raw safe-control and ASan-report output.
 2. Download the `asan-smoke-<source SHA>` artifact from that run. It contains `environment.txt`, `build.log`, `safe.log`, `overflow.log`, and `summary.txt`.

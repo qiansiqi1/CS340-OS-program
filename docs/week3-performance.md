@@ -93,12 +93,12 @@ respective authors. No upstream GCC or LLVM source was modified.
 
 ## Handoff to the fourth member
 
-- The local integration review combines main and the Week 3 branch without
-  a merge conflict. No merge commit or push has been made during this review.
-  Review the unified documentation before finalizing the merge.
-- Preserve actual Claim 1 artifacts before making a detection verdict.
-  If SPEC or an original workload becomes available, run a matched
-  comparison. Otherwise retain the scope and verdict above.
+- Main and the Week 3 branch were merged and pushed at `40e5f0f`.
+  Claim 1 evidence from Actions #26 is inspected and archived: 42/42
+  violations detected and 42/42 controls passed. See [Claim 1](claim1.md).
+- Run the integrated performance runner on Linux and archive a new batch;
+  detection CI does not execute it. If SPEC or an original workload becomes
+  available, run a matched comparison; otherwise retain the scope above.
 - Integrate setup, logs, discrepancies and the extension into the English
   PDF. Add the actual contribution and AI-use statements. AI assisted
   with the Week 3 runner, documentation, plot code and interpretation.

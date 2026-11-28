@@ -30,7 +30,7 @@ The Windows registry's legacy ProductName string is not used to infer an OS edit
 | Build settings | C11, `-O1 -g -Wall -Wextra -Werror -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls` |
 | Runtime settings | `detect_leaks=0:halt_on_error=1:abort_on_error=0:exitcode=1:symbolize=1` |
 | Input | Same original C program: `safe` writes index 7; `overflow` writes index 8; allocation is 8 bytes |
-| Current measured results | Pending execution and inspection of the first CI run |
+| Current measured results | Actions #26 at `40e5f0f` inspected and archived: smoke passed; redzone 42/42 violations detected and 42/42 controls passed. See [Claim 1](claim1.md). |
 
 Do not interpret the planned settings as measurements. `environment.txt` in a real run is the authoritative record. Its captured UTC timestamp, source commit, script hashes, compiler output, package versions, and hardware identify that run. The workflow does not pin the moving hosted image or all package patch versions.
 

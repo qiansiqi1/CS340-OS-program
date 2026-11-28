@@ -31,8 +31,8 @@
 
 ## 分支和证据状态
 
-- 默认分支 `main` 的工作流运行 `smoke` 和 `redzone`。[Actions 运行 #10](https://github.com/qiansiqi1/CS340-OS-program/actions/runs/43695706254) 对应源提交 `e8aed04`，两项任务均通过，并上传了两份日志。报告中的实测值仍需逐项核对原始日志。
-- 第二部分的性能基准和运行脚本见 [`1240011613CHENYANTONG` 分支](https://github.com/qiansiqi1/CS340-OS-program/tree/1240011613CHENYANTONG)。第三周性能结果见[独立提交](https://github.com/qiansiqi1/CS340-OS-program/commit/8b9dbd3c183ce8e4711e6391aab97cefb78b9dd1)。该提交的 [Actions 运行](https://github.com/qiansiqi1/CS340-OS-program/actions/runs/44249774534) 执行的是 `smoke` 和 `redzone`。引用性能数据时，从对应实验分支确认实际运行环境、原始数据和统计口径。
+- `main` 已在 `40e5f0f` 合并实验分支。[Actions #26](https://github.com/qiansiqi1/CS340-OS-program/actions/runs/46110961155) 成功；本次两份 artifact 已逐条核对并原样归档。42/42 次紧邻堆边界的单字节越界写入被检出，42/42 次安全对照正常完成。详见 [Claim 1](docs/claim1.md)、[基础证据](evidence/week1/)和[红区原始日志](evidence/claim1/)。结论限于所测子集。
+- 第二部分的性能基准和运行脚本见 [`1240011613CHENYANTONG` 分支](https://github.com/qiansiqi1/CS340-OS-program/tree/1240011613CHENYANTONG)。第三周性能结果见[独立提交](https://github.com/qiansiqi1/CS340-OS-program/commit/8b9dbd3c183ce8e4711e6391aab97cefb78b9dd1)。该提交的 [Actions 运行](https://github.com/qiansiqi1/CS340-OS-program/actions/runs/44249774534) 执行的是 `smoke` 和 `redzone`。这些代码和历史数据现已合并到 main；引用时仍须区分历史性能批次与合并后的新运行。
 
 ## 性能实验：合并后的运行入口
 
@@ -41,7 +41,7 @@
 - 正式入口：Linux 下运行 `python3 scripts/run_week3_perf.py`，需要 GCC/libasan、Python 3.9+、Git 和 ldd。
 - 已保存实验使用 GCC 14.2、Linux 容器，每条件预热一次、测量九次。它与 Clang 18 的检测实验是不同环境。
 - `scripts/run_perf.sh` 仅作为旧命令的兼容入口，转交到上述 Python 脚本；不再生成旧的五次测量 `raw.tsv`。
-- 当前 GitHub Actions 只有 `smoke`、`redzone` 两项检测任务，**没有性能任务**。CI 绿色状态不能证明性能实验已执行。
+- 新增独立工作流 **ASan performance benchmark**：在 Actions 中选择它，点击 **Run workflow → main** 即可用 GitHub Ubuntu 运行性能实验。完成后下载 `asan-perf-<SHA>-<运行ID>-<尝试次数>`，详见[运行和数据下载说明](docs/performance-actions.md)。检测工作流的绿色状态仍不能证明性能已执行。
 - 新测量默认写入唯一的 `results/week3-<UTC时间>-<随机标识>/`，也可以用 `--output-dir` 指定一个尚不存在的目录。不要覆盖已保存证据。
 
 ```bash
@@ -49,7 +49,7 @@ sudo apt-get install --yes gcc python3
 python3 scripts/run_week3_perf.py
 ```
 
-现有数据支持本分配负载中 ASan 约 2.3 倍运行时间，不代表精确复现论文的 SPEC CPU2006 汇总结果。检测实验的计数仍须核验并归档原始日志后再填写。
+现有数据支持本分配负载中 ASan 约 2.3 倍运行时间，不代表精确复现论文的 SPEC CPU2006 汇总结果。本次检测计数已核验归档；合并后性能脚本的首次 Linux 实测仍待完成。详见[复现状态及补充建议](docs/replication-status.md)。
 
 ## 新同学怎么上手
 

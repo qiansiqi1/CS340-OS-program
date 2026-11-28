@@ -1,0 +1,3 @@
+safe exit status: 0
+overflow exit status: 1
+PASS: safe control succeeded; ASan detected and symbolized the one-byte heap overflow.

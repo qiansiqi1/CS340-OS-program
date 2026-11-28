@@ -1,0 +1,1 @@
+Command: clang-18 -std=c11 -O1 -g -Wall -Wextra -Werror -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls examples/heap_bounds.c -o build/heap_bounds

@@ -4,3 +4,7 @@
 *.md text eol=lf
 *.yml text eol=lf
 *.py text eol=lf
+
+# Keep archived artifact checksums stable across Windows and Linux checkouts.
+evidence/week1/** text eol=lf
+evidence/claim1/** text eol=lf
